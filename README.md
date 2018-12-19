@@ -11,11 +11,11 @@ Get gmail credentials https://developers.google.com/gmail/api/quickstart/go
 
 clone this repo. 
 
-`$ cd gcheck`
+`$ cd checkmon`
 
 `$ go get`
 
-Change the query string how you like:
+Change the query string how you like. This is the same as gmail operators.
 
 `const queryStr = "from:Shinken-monitoring  newer_than:1d"`
 
