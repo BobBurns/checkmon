@@ -9,9 +9,12 @@ Install Go https://golang.org/doc/install
 
 Get gmail credentials https://developers.google.com/gmail/api/quickstart/go
 
+
 clone this repo. 
 
 `$ cd checkmon`
+
+Copy `credentials.json` to checkmon directory
 
 `$ go get`
 
