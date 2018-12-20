@@ -14,9 +14,9 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/gmail/v1"
-)
 
-const queryStr = "from:Shinken-monitoring  newer_than:1d"
+	"gopkg.in/natefinch/lumberjack.v2"
+)
 
 // can use this in the future to
 // build more granular query
@@ -99,14 +99,25 @@ func main() {
 		log.Fatalf("Unable to retrieve Gmail client: %v", err)
 	}
 
-	//user := "me"
-	//msg := []message{}
-	//pageToken := ""
+	// set up logging
+	log.SetOutput(&lumberjack.Logger{
+		Filename: "checkmon.log",
+		MaxSize:  5,
+		MaxAge:   7,
+		Compress: true,
+	})
+
+	// message to send
 	var sendMess gmail.Message
+
+	// get query string
+	queryStr := "from:Shinken-monitoring  newer_than:1d"
+	if len(os.Args) == 2 && os.Args[1] != "" {
+		queryStr = os.Args[1]
+	}
 
 	// basic loop to check if there are any status alerts
 	// in 24 hour time, and if no send email warning
-
 	for {
 
 		req := srv.Users.Messages.List("me").Q(queryStr)
