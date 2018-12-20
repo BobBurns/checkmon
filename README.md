@@ -22,6 +22,8 @@ Change the query string how you like. This is the same as gmail operators.
 
 `const queryStr = "from:Shinken-monitoring  newer_than:1d"`
 
+Or supply query string as argument `./checkmon "subject:too much bla newer_than:1d"`
+
 `$ go build`
 
 Run in the background on your server
@@ -30,4 +32,4 @@ Run in the background on your server
 
 Note that the first time the program runs, you will have to get an authentication token.
  
-TODO: proper logging. 
+Logging in checkmon.log
