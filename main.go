@@ -125,29 +125,44 @@ func main() {
 		r, err := req.Do()
 
 		if err != nil {
-			log.Fatalf("unable to retrieve messages: %s", err)
+			log.Printf("unable to retrieve messages: %s", err)
+			continue
 		}
 
 		numMess := len(r.Messages)
 
 		if numMess == 0 {
-			// send a warning message
-			messageStr := []byte(
-				"From: reburns@protonmail.com\r\n" +
-					"To: bossman@checker.com\r\n" +
-					"Subject: Possible Monitoring Failure\r\n\r\n" +
-					"Hey Bob!\nThere may be an issue with Shinken. I have not recieved any alerts for 24 hours.\n\nPeace.")
+			// lets double check the trash
+			req = srv.Users.Messages.List("me").Q(queryStr + " label:trash")
+			rt, err := req.Do()
 
-			sendMess.Raw = base64.URLEncoding.EncodeToString(messageStr)
-
-			// Send the message
-			_, err = srv.Users.Messages.Send("me", &sendMess).Do()
 			if err != nil {
-				log.Println(err)
-			} else {
-				log.Println("Warning Message sent")
+				log.Printf("unabele to retrieve messages: %s", err)
+				continue
 			}
+			numTrashMess := len(rt.Messages)
 
+			if numTrashMess == 0 {
+				// send a warning message
+				messageStr := []byte(
+					"From: reburns@protonmail.com\r\n" +
+						"To: bossman@checker.com\r\n" +
+						"Subject: Possible Monitoring Failure\r\n\r\n" +
+						"Hey Bob!\nThere may be an issue with Shinken. I have not received any alerts for 24 hours.\n\nPeace.")
+
+				sendMess.Raw = base64.URLEncoding.EncodeToString(messageStr)
+
+				// Send the message
+				_, err = srv.Users.Messages.Send("me", &sendMess).Do()
+				if err != nil {
+					log.Println(err)
+				} else {
+					log.Println("Warning Message sent")
+
+				}
+			} else {
+				log.Printf("%d messages received in the last 24 hours and are in the trash\n", numTrashMess)
+			}
 		} else {
 			log.Printf("%d messages received in the last 24 hours\n", numMess)
 		}
