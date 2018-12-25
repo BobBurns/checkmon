@@ -125,8 +125,7 @@ func main() {
 		r, err := req.Do()
 
 		if err != nil {
-			log.Printf("unable to retrieve messages: %s", err)
-			continue
+			log.Fatalf("unable to retrieve messages: %s", err)
 		}
 
 		numMess := len(r.Messages)
@@ -137,8 +136,7 @@ func main() {
 			rt, err := req.Do()
 
 			if err != nil {
-				log.Printf("unabele to retrieve messages: %s", err)
-				continue
+				log.Fatalf("unable to retrieve messages: %s", err)
 			}
 			numTrashMess := len(rt.Messages)
 
